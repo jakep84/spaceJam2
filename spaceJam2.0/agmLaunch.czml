@@ -61,7 +61,7 @@
     },
     "model":{
       "show":true,
-      "gltf":"/sjc/spaceJamDemo/hf.glb",
+      "gltf":"/spaceJam2.0/hf.glb",
       "interval":"2014-10-26T16:12:05.81999999999971Z/2014-10-26T16:17:28.2039999999997Z",
       "scale":1
     }

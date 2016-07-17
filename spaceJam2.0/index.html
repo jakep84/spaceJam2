@@ -32,9 +32,9 @@
 <div id="cesiumContainer"></div>
 <div id="loadingOverlay"><h1>Welcome to spaceJam</h1></div>
 <div class="toolbar-left">
-<button id='MQ-9' onclick="fire();">View MQ-9</button>
-<button id='threat' onclick="alert('You clicked threat!');">View Threat</button>
-<button id='fire' onclick="alert('You clicked fire!');">Fire AGM-114</button>
+<!-- <button id='MQ-9' onclick="">View MQ-9</button>
+<button id='threat' onclick="alert('You clicked threat!');">View Threat</button> -->
+<button id='fire' onclick="fire();">Fire AGM-114</button>
 </div>
 <script>
 function foobar(){
@@ -53,11 +53,16 @@ var scene = viewer.scene;
 var ellipsoid = viewer.scene.globe.ellipsoid;
 // Specify our point of interest.
 var pointOfInterest = Cesium.Cartographic.fromDegrees(
-    -112.729, 36.10883,5000, new Cesium.Cartographic());
+    -112.729, 36.10883,6500, new Cesium.Cartographic());
+var enemyLocation = Cesium.Cartographic.fromDegrees(
+    -112.6595, 36.10883,1326, new Cesium.Cartographic());
+
 // [OPTIONAL] Fly the camera there, to see if we got the right point.
 viewer.camera.flyTo({
-    destination: ellipsoid.cartographicToCartesian(pointOfInterest,
-        new Cesium.Cartesian3())
+        // destiation : ellipsoid.cartographicToCartesian(enemyLocation,
+        //     new Cesium.Cartesian3()),
+        destination: ellipsoid.cartographicToCartesian(pointOfInterest,
+            new Cesium.Cartesian3())
 });
 // Sample the terrain (async) and write the answer to the console.
 Cesium.sampleTerrain(viewer.terrainProvider, 9, [ pointOfInterest ])
@@ -74,9 +79,25 @@ var model = scene.primitives.add(Cesium.Model.fromGltf({
     //Name it for the info box
     name :'Threat',
     //Make the target a target apc
-    url : 'spaceJam2.0/Cesium_Ground.glb',
+    url : '/spaceJam2.0/Cesium_Ground.glb',
     //Position the target object (I could use modelMatrix for positioning of all objects ( except firing location ) )
     modelMatrix : modelMatrix,
+    //Size of the vehicle
+    scale : 1.0,
+    //direction of the apc
+    heading : 20,
+}));
+//Build mq9 matrix
+var mq9Matrix = Cesium.Transforms.eastNorthUpToFixedFrame(
+    Cesium.Cartesian3.fromDegrees(-112.729, 36.10883,6400));
+//Create target object
+var model = scene.primitives.add(Cesium.Model.fromGltf({
+    //Name it for the info box
+    name :'Threat',
+    //Make the target a target apc
+    url : '/spaceJam2.0/mq9.glb',
+    //Position the target object (I could use modelMatrix for positioning of all objects ( except firing location ) )
+    modelMatrix : mq9Matrix,
     //Size of the vehicle
     scale : 1.0,
     //direction of the apc
@@ -154,51 +175,66 @@ var killRadius = viewer.entities.add({
 Cesium.addToolbarButton('View Threat', function() {
     viewer.trackedEntity = killRadius;
 });
-//build matrix for weapons platform
-function createModel() {
-    var position = Cesium.Cartesian3.fromDegrees(-112.729, 36.10883, height);
-    var heading = Cesium.Math.toRadians(270);
-    var pitch = 0;
-    var roll = 0;
-    var orientation = Cesium.Transforms.headingPitchRollQuaternion(position, heading, pitch, roll);
-    var entity = viewer.entities.add({
-        name : url,
-        position : position,
-        orientation : orientation,
-        height : 6400.0,
-        model : {
-            uri : '/spaceJam2.0/mq9.glb',
-            //minimumPixelSize : 128,
-            scale : 1
-        }
-    });
-    viewer.trackedEntity = entity;
-}
-//Give option for MQ-9 or AH-64
-var options = [
-    {text :'Choose Platform'
-},
-    {
-    text : 'MQ-9',
-    onselect : function() {
-        createModel('/spaceJam2.0/mq9.glb', 6400.0);
-    },
-},{
-    text : 'AH-64(Inactive)',
-    onselect : function() {
-        createModel('/spaceJam2.0/ah64.glb', 6400.0);
-    },
-}
-];
-Cesium.addToolbarMenu(options);
-
+// //build matrix for weapons platform
+// function createModel() {
+//     var position = Cesium.Cartesian3.fromDegrees(-112.729, 36.10883, height);
+//     var heading = Cesium.Math.toRadians(270);
+//     var pitch = 0;
+//     var roll = 0;
+//     var orientation = Cesium.Transforms.headingPitchRollQuaternion(position, heading, pitch, roll);
+//     var entity = viewer.entities.add({
+//         name : url,
+//         position : position,
+//         orientation : orientation,
+//         height : 6400.0,
+//         model : {
+//             uri : '/spaceJam2.0/mq9.glb',
+//             //minimumPixelSize : 128,
+//             scale : 1
+//         }
+//     });
+//     viewer.trackedEntity = entity;
+// }
+// //Give option for MQ-9 or AH-64
+// var options = [
+//     {text :'Choose Platform'
+// },
+//     {
+//     text : 'MQ-9',
+//     onselect : function() {
+//         createModel('/spaceJam2.0/mq9.glb', 6400.0);
+//     },
+// },{
+//     text : 'AH-64(Inactive)',
+//     onselect : function() {
+//         createModel('/spaceJam2.0/ah64.glb', 6400.0);
+//     },
+// }
+// ];
+// Cesium.addToolbarMenu(options);
+//Position the target object
+// var mq9Matrix = Cesium.Transforms.eastNorthUpToFixedFrame(
+//     Cesium.Cartesian3.fromDegrees(-112.729, 36.10883,6400));
+// //Create target object
+// var model = scene.primitives.add(Cesium.Model.fromGltf({
+//     //Name it for the info box
+//     name :'Threat',
+//     //Make the target a target apc
+//     url : '/spaceJam2.0/mq9.glb',
+//     //Position the target object (I could use modelMatrix for positioning of all objects ( except firing location ) )
+//     modelMatrix : mq9Matrix,
+//     //Size of the vehicle
+//     scale : 1.0,
+//     //direction of the apc
+//     heading : 20,
+// }));
 
 function fire() {
   alert("works");
     viewer.dataSources.add(Cesium.CzmlDataSource.load('/spaceJam2.0/agmLaunch.czml'));
 
     viewer.scene.camera.setView({
-        destination:  Cesium.Cartesian3.fromDegrees( -112.7295, 36.10883, 8000),
+        destination:  Cesium.Cartesian3.fromDegrees( -112.7295, 36.10873, 8000),
         orientation: {
             heading: 6,
             picth: -Cesium.Math.PI_OVER_TWO
