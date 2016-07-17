@@ -1,0 +1,69 @@
+
+[
+  {
+    "id":"document",
+    "availability":"2014-10-26T16:12:05.81999999999971Z/2014-10-26T16:17:28.2039999999997Z",
+    "version":"1.2",
+    "clock":{
+      "interval":"2014-10-26T16:12:05.81999999999971Z/2014-10-26T16:17:28.2039999999997Z",
+      "currentTime":"2014-10-26T16:12:05.81999999999971Z",
+      "multiplier":1,
+      "step":"SYSTEM_CLOCK_MULTIPLIER",
+      "range":"LOOP_STOP"
+    }
+  },
+  {
+    "id":"trackLog-2014-Oct-26_12-12-05",
+    "availability":"2014-10-26T16:12:05.81999999999971Z/2014-10-26T16:17:28.2039999999997Z",
+    "label":{
+      "show":true,
+      "interval":"2014-10-26T16:12:05.81999999999971Z/2014-10-26T16:17:28.2039999999997Z",
+      "fillColor":{
+        "rgba":[
+          0,255,255,255
+        ]
+      },
+      "text":"AGM-114",
+      "horizontalOrigin":"LEFT",
+      "verticalOrigin":"CENTER",
+      "pixelOffset":{
+        "cartesian2":[
+          10,0
+        ]
+      },
+      "font":"bold 15pt Segoe UI Semibold"
+    },
+    "position":{
+      "interpolationAlgorithm":"LAGRANGE",
+      "interpolationDegree":2,
+      "interval":"2014-10-26T16:12:05.81999999999971Z/2014-10-26T16:17:28.2039999999997Z",
+      "epoch":"2014-10-26T16:12:05.81999999999971Z",
+      "cartographicDegrees":[
+      0, -112.7295, 36.10883, 6400,
+      10, -112.668, 36.10883, 7000,
+      20, -112.6595, 36.10883, 1227
+      ]
+    },
+    "path":{
+      "show":true,
+      "interval":"2014-10-26T16:12:05.81999999999971Z/2014-10-26T16:17:28.2039999999997Z",
+      "material":{
+        "solidColor":{
+          "color":{
+            "rgba":[
+              144,238,144,255
+            ]
+          }
+        }
+      },
+      "width":3,
+      "leadTime":0
+    },
+    "model":{
+      "show":true,
+      "gltf":"/sjc/spaceJamDemo/hf.glb",
+      "interval":"2014-10-26T16:12:05.81999999999971Z/2014-10-26T16:17:28.2039999999997Z",
+      "scale":1
+    }
+  }
+]

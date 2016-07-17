@@ -1,0 +1,19 @@
+[
+    {
+        "id" : "document",
+        "version" : "1.0"
+    }, {
+        "id" : "apc model",
+        "name" : "Threat",
+        "position" : {
+          "cartographicDegrees" : [
+          -112.6595, 36.10883,1226
+          ]
+          },
+          "model":{
+            "show":true,
+            "gltf":"/sjc/spaceJamDemo/Cesium_Ground.glb",
+            "scale":1
+          }
+      }
+]

@@ -1,0 +1,22 @@
+[
+    {
+        "id" : "document",
+        "version" : "1.0"
+    }, {
+        "id" : "aircraft model",
+        "name" : "MQ-9",
+        "position" : {
+          "cartographicDegrees" : [
+          -112.729, 36.10883, 6400
+          ]
+          },
+          "model":{
+            "show":true,
+            "gltf":"/sjc/spaceJamDemo/mq9.glb",
+            "scale":1
+            "orientation": {
+                "unitQuaternion": [ 0.0, 0.0, 0.0, 1.0 ]
+            }
+          }
+      }
+]
