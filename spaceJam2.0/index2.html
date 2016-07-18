@@ -71,6 +71,8 @@ viewer.scene.globe.depthTestAgainstTerrain = true;
 
 //create function to build the MQ-9
 function createMq9() {
+//Add model height
+    var height = 6400.00;
 //give one postition to all models at the same time
     var position = Cesium.Cartesian3.fromDegrees(-112.729, 36.10883, height);
 //make the heading into a radian by way of the math property.
@@ -88,12 +90,19 @@ function createMq9() {
     var entity = viewer.entities.add({
 // take the name from the model url (below)
         name : "MQ-9",
+// declare height of the object
+        height : height,
 // take the position from the position variable above
         position : position,
+//add the heading property
+        heading : heading,
+//add the pitch property
+        pitch : pitch,
+//add roll property
+        roll : roll,
 // get the orientation from the orientationvariable above
         orientation : orientation,
-// declare height of the object
-        height : 6400.0,
+
 // build the actual model by uri and scale, you can also use the
 // minimumPixelSize/ maximumPixelSize
     model : {
