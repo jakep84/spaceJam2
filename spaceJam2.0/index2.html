@@ -39,81 +39,48 @@
 <script>
 Cesium.BingMapsApi.defaultKey = 'lCTZtg5mZdx8IqETpNu0~1mCU8hrQlgW6QZ4Wd8SdWQ~AnDBosGQEY5KZIk9B_PxLxfYYv61p3ZcYrHeacJ3gGoAwIZ8Chkc-mllvOrOUXJj';
 var terrainModels = Cesium.createDefaultTerrainProviderViewModels();
-// Construct the viewer, with a high-res terrain source pre-selected.
 var viewer = new Cesium.Viewer('cesiumContainer', {
     terrainProviderViewModels: terrainModels,
-    selectedTerrainProviderViewModel: terrainModels[1]  // Select STK High-res terrain
-});
-//Create instance the of the veiwer
+    selectedTerrainProviderViewModel: terrainModels[1]
+  });
 var scene = viewer.scene;
-// Get a reference to the ellipsoid, with terrain on it.  (This API may change soon)
 var ellipsoid = viewer.scene.globe.ellipsoid;
-// Specify our point of interest.
 var pointOfInterest = Cesium.Cartographic.fromDegrees(
     -112.729, 36.10883,6500, new Cesium.Cartographic());
 var enemyLocation = Cesium.Cartographic.fromDegrees(
     -112.6595, 36.10883,1326, new Cesium.Cartographic());
 
-// [OPTIONAL] Fly the camera there, to see if we got the right point.
 viewer.camera.flyTo({
-        // destiation : ellipsoid.cartographicToCartesian(enemyLocation,
-        //     new Cesium.Cartesian3()),
         destination: ellipsoid.cartographicToCartesian(pointOfInterest,
             new Cesium.Cartesian3())
 });
-// Sample the terrain (async) and write the answer to the console.
 Cesium.sampleTerrain(viewer.terrainProvider, 9, [ pointOfInterest ])
 .then(function(samples) {
     console.log('Height in meters is: ' + samples[0].height);
 });
-////Enable depth testing so things behind the terrain disappear.
 viewer.scene.globe.depthTestAgainstTerrain = true;
 
-//create function to build the MQ-9
 function createMq9() {
-//Add model height
     var height = 6400.00;
-//give one postition to all models at the same time
     var position = Cesium.Cartesian3.fromDegrees(-112.729, 36.10883, height);
-//make the heading into a radian by way of the math property.
     var heading = Cesium.Math.toRadians(270);
-//adjust the pitch of the model
     var pitch = 0;
-//adjust the roll (tilt) (left and right )
     var roll = 0;
-// !important the orientation is a quaternion location the computation would be done
-//by way of the czml headingPitchRollQuaternion "property" it takes position,
-//heading, pitch, and roll into account to orient (aim) the model
     var orientation = Cesium.Transforms.headingPitchRollQuaternion(position, heading, pitch, roll);
-// !important build the entity, an entity is a high order function
-// as opposed to a primitive (a low order function)
     var entity = viewer.entities.add({
-// take the name from the model url (below)
         name : "MQ-9",
-// declare height of the object
         height : height,
-// take the position from the position variable above
         position : position,
-//add the heading property
         heading : heading,
-//add the pitch property
         pitch : pitch,
-//add roll property
         roll : roll,
-// get the orientation from the orientationvariable above
         orientation : orientation,
-
-// build the actual model by uri and scale, you can also use the
-// minimumPixelSize/ maximumPixelSize
-    model : {
-// add the models uri
-        uri : '/spaceJam2.0/mq9.glb',
-// add the scale for fast sizing
-        scale : 1
+        model : {
+            uri : '/spaceJam2.0/mq9.glb',
+            scale : 1
     }
   })
 };
 </script>
-
 </body>
 </html>

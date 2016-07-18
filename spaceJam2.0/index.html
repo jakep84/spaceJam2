@@ -34,6 +34,7 @@
 <div class="toolbar-left">
 <!-- <button id='MQ-9' onclick="">View MQ-9</button>
 <button id='threat' onclick="alert('You clicked threat!');">View Threat</button> -->
+<button id='red' onclick="red()">View kill radius</button>
 <button id='fire' onclick="fire();">Fire AGM-114</button>
 </div>
 <script>
@@ -42,141 +43,98 @@ function foobar(){
 }
 Cesium.BingMapsApi.defaultKey = 'lCTZtg5mZdx8IqETpNu0~1mCU8hrQlgW6QZ4Wd8SdWQ~AnDBosGQEY5KZIk9B_PxLxfYYv61p3ZcYrHeacJ3gGoAwIZ8Chkc-mllvOrOUXJj';
 var terrainModels = Cesium.createDefaultTerrainProviderViewModels();
-// Construct the viewer, with a high-res terrain source pre-selected.
 var viewer = new Cesium.Viewer('cesiumContainer', {
     terrainProviderViewModels: terrainModels,
     selectedTerrainProviderViewModel: terrainModels[1]  // Select STK High-res terrain
 });
-//Create instance the of the veiwer
 var scene = viewer.scene;
-// Get a reference to the ellipsoid, with terrain on it.  (This API may change soon)
 var ellipsoid = viewer.scene.globe.ellipsoid;
-// Specify our point of interest.
 var pointOfInterest = Cesium.Cartographic.fromDegrees(
     -112.729, 36.10883,6500, new Cesium.Cartographic());
 var enemyLocation = Cesium.Cartographic.fromDegrees(
     -112.6595, 36.10883,1326, new Cesium.Cartographic());
 
-// [OPTIONAL] Fly the camera there, to see if we got the right point.
 viewer.camera.flyTo({
-        // destiation : ellipsoid.cartographicToCartesian(enemyLocation,
-        //     new Cesium.Cartesian3()),
         destination: ellipsoid.cartographicToCartesian(pointOfInterest,
             new Cesium.Cartesian3())
 });
-// Sample the terrain (async) and write the answer to the console.
 Cesium.sampleTerrain(viewer.terrainProvider, 9, [ pointOfInterest ])
 .then(function(samples) {
     console.log('Height in meters is: ' + samples[0].height);
 });
-////Enable depth testing so things behind the terrain disappear.
 viewer.scene.globe.depthTestAgainstTerrain = true;
-//Position the target object
 var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(
     Cesium.Cartesian3.fromDegrees(-112.6595, 36.10883,1226));
-//Create target object
 var model = scene.primitives.add(Cesium.Model.fromGltf({
-    //Name it for the info box
     name :'Threat',
-    //Make the target a target apc
     url : '/spaceJam2.0/Cesium_Ground.glb',
-    //Position the target object (I could use modelMatrix for positioning of all objects ( except firing location ) )
     modelMatrix : modelMatrix,
-    //Size of the vehicle
     scale : 1.0,
-    //direction of the apc
     heading : 20,
 }));
-//Build mq9 matrix
+
 var mq9Matrix = Cesium.Transforms.eastNorthUpToFixedFrame(
     Cesium.Cartesian3.fromDegrees(-112.729, 36.10883,6400));
-//Create target object
+    var platformHeight = 6400.00;
+    var platformPosition = Cesium.Cartesian3.fromDegrees(-112.729, 36.10883, platformHeight);
+    var platformHeading = Cesium.Math.toRadians(75);
+    var platformPitch = 0;
+    var platformRoll = 0;
+    var platformOrientation = Cesium.Transforms.headingPitchRollQuaternion(platformPosition, platformHeading, platformPitch, platformRoll);
 var model = scene.primitives.add(Cesium.Model.fromGltf({
-    //Name it for the info box
-    name :'Threat',
-    //Make the target a target apc
+    height : platformHeight,
+    name :'MQ-9',
     url : '/spaceJam2.0/mq9.glb',
-    //Position the target object
-    //(I could use modelMatrix for positioning of all objects
-    //( except firing location ) )
     modelMatrix : mq9Matrix,
-    //Size of the vehicle
     scale : 1.0,
-    //direction of the apc
-    heading : 70,
+    heading : platformHeading,
+    position : platformPosition,
+    pitch : platformPitch,
+    roll : platformRoll,
+    orientation : platformOrientation
 }));
-//Create visible 8km Maximum effective range ellipse
 var maxEffectiveRange = viewer.entities.add({
-  //Name it for the info box
   name: 'Maximum Effective Range',
-  //Position the ring
   position : Cesium.Cartesian3.fromDegrees(-112.6595, 36.10883, 3000),
-  //Create the actual max effective range ellipse
   ellipse : {
-    //Size the ellipse
     semiMinorAxis : 8000.0,
     semiMajorAxis : 8000.0,
-    //Give it no interior color (maybe later after drop pins//set target pin//choose fire location (turns the inside of the ellipse transparent green for better visual of firing location area on cloase up))
       fill : false,
-      //Give it an outline
       outline : true,
-      //Make it a wall for better visibility
       height:2000,
-      //Color the outline red
       outlineColor : Cesium.Color.GREEN,
-      //Size the outline
       outlineWidth : 4.0,
   }
 });
-//Create visible 20m blast radius
 var blastRadius = viewer.entities.add({
-    //Name it blast radius for the info box
     name : 'Blast Radius',
-    //Describe it for the info box
     description: '',
-    //Postion it using geodesic grid coordinates
     position : Cesium.Cartesian3.fromDegrees(-112.6595, 36.10883,1227),
-    //Create the actual blast radius ellipsiod
     ellipsoid : {
-        //Size it
         radii : new Cesium.Cartesian3(20.0, 20.0, 20.0),
-        //Give it a clear transparent gridded skin
         material : new Cesium.GridMaterialProperty({
-        //Color the grid yellow
         color : Cesium.Color.YELLOW,
-        //Make the skin tranparent
         cellAlpha : 0.2,
-        //Amount of lines in the grid
         lineCount : new Cesium.Cartesian2(8, 8),
-        //Thickness of the lines
         lineThickness : new Cesium.Cartesian2(2.0, 2.0),
          }
     )}
 });
-//Create visible 20m kill radius object
 var killRadius = viewer.entities.add({
-    //Name it for the info box
     name : 'Kill Radius',
-    //Describe it for the info box
     description: '<iframe width="400" height="300" src="https://www.youtube.com/embed/-zVybabPTy4" frameborder="0" allowfullscreen></iframe>',
-    //postition it using it's give cartesian coordinates
     position : Cesium.Cartesian3.fromDegrees(-112.6595, 36.10883,1227),
-    //create the actual blast radius ellipsoid
     ellipsoid : {
-        //Size it (x,y,z)
         radii : new Cesium.Cartesian3(15.0, 15.0, 15.0),
-        //Give it a transparent red skin
         material : Cesium.Color.RED.withAlpha(0.5),
-        //Give it an outline for better visual of kill radius
         outline : true,
-        //Color the outline black
         outlineColor : Cesium.Color.BLACK,
     }
     });
-//Add button to veiw target area
-Cesium.addToolbarButton('View Threat', function() {
+ function red() {
+   alert("yep");
     viewer.trackedEntity = killRadius;
-});
+};
 //
 //Position the target object
 // var mq9Matrix = Cesium.Transforms.eastNorthUpToFixedFrame(
