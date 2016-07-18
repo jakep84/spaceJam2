@@ -12,6 +12,9 @@ agmLaunch.czml position.
 <button id='MQ-9' onclick="createMq9">View MQ-9</button>
 <script>
 //this will be for mq9
+//build viewer
+var viewer = new Cesium.Viewer('cesiumContainer');
+//create function to build the MQ-9
 function createMq9() {
 //give one postition to all models at the same time
     var position = Cesium.Cartesian3.fromDegrees(-112.729, 36.10883);
@@ -44,8 +47,6 @@ function createMq9() {
 // add the scale for fast sizing
         scale : 1
     }
-});
-// ?? point the viewer at the model when entity called
-viewer.trackedEntity = entity;
-
+  })
+};
 </script>
