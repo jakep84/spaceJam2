@@ -1,0 +1,51 @@
+mq9Matrix is a primitive,
+createModel is an entity.
+
+
+maybe I can build a model primitive/ entity that would
+have the model built in. Should it be high order o
+not? that's one to look up.
+
+I need to add the 4th phase to hit at 35 degrees to the
+agmLaunch.czml position.
+
+<button id='MQ-9' onclick="createMq9">View MQ-9</button>
+<script>
+//this will be for mq9
+function createMq9() {
+//give one postition to all models at the same time
+    var position = Cesium.Cartesian3.fromDegrees(-112.729, 36.10883);
+//make the heading into a radian by way of the math property.
+    var heading = Cesium.Math.toRadians(270);
+//adjust the pitch of the model
+    var pitch = 0;
+//adjust the roll (tilt) (left and right )
+    var roll = 0;
+// !important the orientation is a quaternion location the computation would be done
+//by way of the czml headingPitchRollQuaternion "property" it takes position,
+//heading, pitch, and roll into account to orient (aim) the model
+    var orientation = Cesium.Transforms.headingPitchRollQuaternion(position, heading, pitch, roll);
+// !important build the entity, an entity is a high order function
+// as opposed to a primitive (a low order function)
+    var entity = viewer.entities.add({
+// take the name from the model url (below)
+        name : "MQ-9",
+// take the position from the position variable above
+        position : position,
+// get the orientation from the orientationvariable above
+        orientation : orientation,
+// declare height of the object
+        height : 6400.0,
+// build the actual model by uri and scale, you can also use the
+// minimumPixelSize/ maximumPixelSize
+    model : {
+// add the models uri
+        uri : '/spaceJam2.0/mq9.glb',
+// add the scale for fast sizing
+        scale : 1
+    }
+});
+// ?? point the viewer at the model when entity called
+viewer.trackedEntity = entity;
+
+</script>
