@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>Hello World!</title>
+    <script src="jquery-1.12.4.min.js"></script>
+    <script src="../Build/Cesium/Cesium.js"></script>
+    <style type="text/css">
+        @import url(../Build/Cesium/Widgets/widgets.css);
+
+        html, body, #cesiumContainer {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .toolbar-left {
+            display: block;
+            position: absolute;
+            top: 5px;
+            left: 5px;
+        }
+    </style>
+</head>
+<body>
+<div id="cesiumContainer"></div>
+<div id="loadingOverlay"><h1>Welcome to spaceJam</h1></div>
+<div class="toolbar-left">
+<button id='MQ-9' onclick="createMq9">View MQ-9</button>
+<!-- <button id='threat' onclick="alert('You clicked threat!');">View Threat</button> -->
+<!-- <button id='fire' onclick="fire();">Fire AGM-114</button> -->
+</div>
+<script>
+Cesium.BingMapsApi.defaultKey = 'lCTZtg5mZdx8IqETpNu0~1mCU8hrQlgW6QZ4Wd8SdWQ~AnDBosGQEY5KZIk9B_PxLxfYYv61p3ZcYrHeacJ3gGoAwIZ8Chkc-mllvOrOUXJj';
+var terrainModels = Cesium.createDefaultTerrainProviderViewModels();
+// Construct the viewer, with a high-res terrain source pre-selected.
+var viewer = new Cesium.Viewer('cesiumContainer', {
+    terrainProviderViewModels: terrainModels,
+    selectedTerrainProviderViewModel: terrainModels[1]  // Select STK High-res terrain
+});
+//Create instance the of the veiwer
+var scene = viewer.scene;
+// Get a reference to the ellipsoid, with terrain on it.  (This API may change soon)
+var ellipsoid = viewer.scene.globe.ellipsoid;
+// Specify our point of interest.
+var pointOfInterest = Cesium.Cartographic.fromDegrees(
+    -112.729, 36.10883,6500, new Cesium.Cartographic());
+var enemyLocation = Cesium.Cartographic.fromDegrees(
+    -112.6595, 36.10883,1326, new Cesium.Cartographic());
+
+// [OPTIONAL] Fly the camera there, to see if we got the right point.
+viewer.camera.flyTo({
+        // destiation : ellipsoid.cartographicToCartesian(enemyLocation,
+        //     new Cesium.Cartesian3()),
+        destination: ellipsoid.cartographicToCartesian(pointOfInterest,
+            new Cesium.Cartesian3())
+});
+// Sample the terrain (async) and write the answer to the console.
+Cesium.sampleTerrain(viewer.terrainProvider, 9, [ pointOfInterest ])
+.then(function(samples) {
+    console.log('Height in meters is: ' + samples[0].height);
+});
+////Enable depth testing so things behind the terrain disappear.
+viewer.scene.globe.depthTestAgainstTerrain = true;
+
+//create function to build the MQ-9
+function createMq9() {
+//give one postition to all models at the same time
+    var position = Cesium.Cartesian3.fromDegrees(-112.729, 36.10883, height);
+//make the heading into a radian by way of the math property.
+    var heading = Cesium.Math.toRadians(270);
+//adjust the pitch of the model
+    var pitch = 0;
+//adjust the roll (tilt) (left and right )
+    var roll = 0;
+// !important the orientation is a quaternion location the computation would be done
+//by way of the czml headingPitchRollQuaternion "property" it takes position,
+//heading, pitch, and roll into account to orient (aim) the model
+    var orientation = Cesium.Transforms.headingPitchRollQuaternion(position, heading, pitch, roll);
+// !important build the entity, an entity is a high order function
+// as opposed to a primitive (a low order function)
+    var entity = viewer.entities.add({
+// take the name from the model url (below)
+        name : "MQ-9",
+// take the position from the position variable above
+        position : position,
+// get the orientation from the orientationvariable above
+        orientation : orientation,
+// declare height of the object
+        height : 6400.0,
+// build the actual model by uri and scale, you can also use the
+// minimumPixelSize/ maximumPixelSize
+    model : {
+// add the models uri
+        uri : '/spaceJam2.0/mq9.glb',
+// add the scale for fast sizing
+        scale : 1
+    }
+  })
+};
+</script>
+
+</body>
+</html>
