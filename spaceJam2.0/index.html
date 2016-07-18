@@ -96,12 +96,14 @@ var model = scene.primitives.add(Cesium.Model.fromGltf({
     name :'Threat',
     //Make the target a target apc
     url : '/spaceJam2.0/mq9.glb',
-    //Position the target object (I could use modelMatrix for positioning of all objects ( except firing location ) )
+    //Position the target object
+    //(I could use modelMatrix for positioning of all objects
+    //( except firing location ) )
     modelMatrix : mq9Matrix,
     //Size of the vehicle
     scale : 1.0,
     //direction of the apc
-    heading : 20,
+    heading : 70,
 }));
 //Create visible 8km Maximum effective range ellipse
 var maxEffectiveRange = viewer.entities.add({
@@ -175,43 +177,7 @@ var killRadius = viewer.entities.add({
 Cesium.addToolbarButton('View Threat', function() {
     viewer.trackedEntity = killRadius;
 });
-// //build matrix for weapons platform
-// function createModel() {
-//     var position = Cesium.Cartesian3.fromDegrees(-112.729, 36.10883, height);
-//     var heading = Cesium.Math.toRadians(270);
-//     var pitch = 0;
-//     var roll = 0;
-//     var orientation = Cesium.Transforms.headingPitchRollQuaternion(position, heading, pitch, roll);
-//     var entity = viewer.entities.add({
-//         name : url,
-//         position : position,
-//         orientation : orientation,
-//         height : 6400.0,
-//         model : {
-//             uri : '/spaceJam2.0/mq9.glb',
-//             //minimumPixelSize : 128,
-//             scale : 1
-//         }
-//     });
-//     viewer.trackedEntity = entity;
-// }
-// //Give option for MQ-9 or AH-64
-// var options = [
-//     {text :'Choose Platform'
-// },
-//     {
-//     text : 'MQ-9',
-//     onselect : function() {
-//         createModel('/spaceJam2.0/mq9.glb', 6400.0);
-//     },
-// },{
-//     text : 'AH-64(Inactive)',
-//     onselect : function() {
-//         createModel('/spaceJam2.0/ah64.glb', 6400.0);
-//     },
-// }
-// ];
-// Cesium.addToolbarMenu(options);
+//
 //Position the target object
 // var mq9Matrix = Cesium.Transforms.eastNorthUpToFixedFrame(
 //     Cesium.Cartesian3.fromDegrees(-112.729, 36.10883,6400));

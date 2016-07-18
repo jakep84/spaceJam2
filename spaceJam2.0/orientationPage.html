@@ -1,0 +1,63 @@
+<script>
+//build matrix for weapons platform
+//function to add all variables of the model "adding" variables after you call the czml file.
+ function createModel() {
+//give one postition to all models at the same time
+     var position = Cesium.Cartesian3.fromDegrees(-112.729, 36.10883, height);
+//make the heading into a radian by way of the math property.
+     var heading = Cesium.Math.toRadians(270);
+//adjust the pitch of the model
+     var pitch = 0;
+//adjust the roll (tilt) (left and right )
+     var roll = 0;
+// !important the orientation is a quaternion location the computation would be done
+//by way of the czml headingPitchRollQuaternion "property" it takes position,
+//heading, pitch, and roll into account to orient (aim) the model
+     var orientation = Cesium.Transforms.headingPitchRollQuaternion(position, heading, pitch, roll);
+// !important build the entity, an entity is a high order function
+// as opposed to a primitive (a low order function)
+     var entity = viewer.entities.add({
+// take the name from the model url (below)
+         name : url,
+// take the position from the position variable above
+         position : position,
+// get the orientation from the orientationvariable above
+         orientation : orientation,
+// declare height of the object
+         height : 6400.0,
+// build the actual model by uri and scale, you can also use the
+// minimumPixelSize/ maximumPixelSize
+         model : {
+// add the models uri
+             uri : '/spaceJam2.0/mq9.glb',
+// add the scale for fast sizing
+             scale : 1
+         }
+     });
+// point the viewer at the model when entity called
+     viewer.trackedEntity = entity;
+ }
+ // build an option czml packet for the interchangabiilty
+ // of MQ-9, AH-64, or other models of choosing on selection of text on
+ // the drop down menu
+ var options = [
+// the initial text on the dropdown menu
+     {text :'Choose Platform'
+ },
+     {
+// the second dropdown selection ( the primary weapon platform selection)
+     text : 'MQ-9',
+// call an onselect function to call the model and the height (the height there)
+// isn't really nessasary and may potentially cause a bug 
+     onselect : function() {
+         createModel('/spaceJam2.0/mq9.glb', 6400.0);
+     },
+ },{
+     text : 'AH-64(Inactive)',
+     onselect : function() {
+         createModel('/spaceJam2.0/ah64.glb', 6400.0);
+     },
+ }
+ ];
+ Cesium.addToolbarMenu(options);
+</script>
