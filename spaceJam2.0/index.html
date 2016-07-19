@@ -50,7 +50,7 @@ var viewer = new Cesium.Viewer('cesiumContainer', {
 var scene = viewer.scene;
 var ellipsoid = viewer.scene.globe.ellipsoid;
 var platformLocation = Cesium.Cartographic.fromDegrees(
-    -112.6894, 36.31794,6400);
+    -112.6894, 36.31794,6600);
 var enemyLocation = Cesium.Cartesian3.fromDegrees(-112.6894, 36.23794,946);
 
 viewer.camera.flyTo({
@@ -73,7 +73,7 @@ var model = scene.primitives.add(Cesium.Model.fromGltf({
 }));
 
 var mq9Matrix = Cesium.Transforms.eastNorthUpToFixedFrame(
-    Cesium.Cartesian3.fromDegrees(-112.6894, 36.31794,6400));
+    Cesium.Cartesian3.fromDegrees(-112.6894, 36.31794,3000));
     var platformHeight = 6400.00;
 var model = scene.primitives.add(Cesium.Model.fromGltf({
     height : platformHeight,
