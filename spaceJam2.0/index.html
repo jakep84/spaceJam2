@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,12 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-    <title>Hello World!</title>
+    <title>spaceJam</title>
     <script src="jquery-1.12.4.min.js"></script>
     <script src="../Build/Cesium/Cesium.js"></script>
     <style type="text/css">
         @import url(../Build/Cesium/Widgets/widgets.css);
-
         html, body, #cesiumContainer {
             width: 100%;
             height: 100%;
@@ -19,7 +17,6 @@
             padding: 0;
             overflow: hidden;
         }
-
         .toolbar-left {
             display: block;
             position: absolute;
@@ -32,15 +29,11 @@
 <div id="cesiumContainer"></div>
 <div id="loadingOverlay"><h1>Welcome to spaceJam</h1></div>
 <div class="toolbar-left">
-<!-- <button id='MQ-9' onclick="">View MQ-9</button>
-<button id='threat' onclick="alert('You clicked threat!');">View Threat</button> -->
-<button id='red' onclick="red()">View kill radius</button>
+<!-- <button id='MQ-9' onclick="pilot()">View MQ-9</button> -->
+<button id='red' onclick="red()">View Threat</button>
 <button id='fire' onclick="fire();">Fire AGM-114</button>
 </div>
 <script>
-function foobar(){
-  alert('click');
-}
 Cesium.BingMapsApi.defaultKey = 'lCTZtg5mZdx8IqETpNu0~1mCU8hrQlgW6QZ4Wd8SdWQ~AnDBosGQEY5KZIk9B_PxLxfYYv61p3ZcYrHeacJ3gGoAwIZ8Chkc-mllvOrOUXJj';
 var terrainModels = Cesium.createDefaultTerrainProviderViewModels();
 var viewer = new Cesium.Viewer('cesiumContainer', {
@@ -51,8 +44,7 @@ var scene = viewer.scene;
 var ellipsoid = viewer.scene.globe.ellipsoid;
 var platformLocation = Cesium.Cartographic.fromDegrees(
     -112.6894, 36.31794,6600);
-var enemyLocation = Cesium.Cartesian3.fromDegrees(-112.6894, 36.23794,946);
-
+var enemyLocation = Cesium.Cartesian3.fromDegrees(-112.6894, 36.23794,949.8);
 viewer.camera.flyTo({
         destination: ellipsoid.cartographicToCartesian(platformLocation,
             new Cesium.Cartesian3())
@@ -71,7 +63,6 @@ var model = scene.primitives.add(Cesium.Model.fromGltf({
     scale : 1.0,
     heading : 20,
 }));
-
 var mq9Matrix = Cesium.Transforms.eastNorthUpToFixedFrame(
     Cesium.Cartesian3.fromDegrees(-112.6894, 36.31794,3000));
     var platformHeight = 6400.00;
@@ -122,53 +113,21 @@ var killRadius = viewer.entities.add({
     }
     });
  function red() {
-   alert("yep");
     viewer.trackedEntity = killRadius;
 };
-//
-//Position the target object
-// var mq9Matrix = Cesium.Transforms.eastNorthUpToFixedFrame(
-//     Cesium.Cartesian3.fromDegrees(-112.729, 36.10883,6400));
-// //Create target object
-// var model = scene.primitives.add(Cesium.Model.fromGltf({
-//     //Name it for the info box
-//     name :'Threat',
-//     //Make the target a target apc
-//     url : '/spaceJam2.0/mq9.glb',
-//     //Position the target object (I could use modelMatrix for positioning of all objects ( except firing location ) )
-//     modelMatrix : mq9Matrix,
-//     //Size of the vehicle
-//     scale : 1.0,
-//     //direction of the apc
-//     heading : 20,
-// }));
-
+function pilot() {
+  viewer.trackedEntity = platformLocation;
+};
 function fire() {
-  alert("works");
     viewer.dataSources.add(Cesium.CzmlDataSource.load('/spaceJam2.0/agmLaunch.czml'));
-
     viewer.scene.camera.setView({
-        destination:  Cesium.Cartesian3.fromDegrees( -112.7295, 36.10873, 8000),
+        destination:  Cesium.Cartesian3.fromDegrees( -112.6788, 36.30, 12000),
         orientation: {
-            heading: 6,
-            picth: -Cesium.Math.PI_OVER_TWO
+            heading: 2,
+            pih: -Cesium.Math.PI_OVER_TWO
         }
     });
 };
-// Cesium.addToolbarButton('Fire AGM-114',fire);
-// Add button to fire AH64
-// Cesium.addToolbarButton('Fire AGM-114', function() {
-//     viewer.dataSources.add(Cesium.CzmlDataSource.load('/sjc/agmLaunch.czml'));
-//
-//     viewer.scene.camera.setView({
-//         destination:  Cesium.Cartesian3.fromDegrees( -112.7295, 36.10883, 8000),
-//         orientation: {
-//             heading: 6,
-//             picth: -Cesium.Math.PI_OVER_TWO
-//         }
-//     });
-// });
 </script>
-
 </body>
 </html>
