@@ -32,20 +32,24 @@
 <div id="cesiumContainer"></div>
 <div id="loadingOverlay"><h1>Welcome to spaceJam</h1></div>
 <div class="toolbar-left">
-<button id='MQ-9' onclick="createMq9">View MQ-9</button>
-<!-- <button id='threat' onclick="alert('You clicked threat!');">View Threat</button> -->
-<!-- <button id='fire' onclick="fire();">Fire AGM-114</button> -->
+<!-- <button id='MQ-9' onclick="">View MQ-9</button>
+<button id='threat' onclick="alert('You clicked threat!');">View Threat</button> -->
+<button id='red' onclick="red()">View kill radius</button>
+<button id='fire' onclick="fire();">Fire AGM-114</button>
 </div>
 <script>
+function foobar(){
+  alert('click');
+}
 Cesium.BingMapsApi.defaultKey = 'lCTZtg5mZdx8IqETpNu0~1mCU8hrQlgW6QZ4Wd8SdWQ~AnDBosGQEY5KZIk9B_PxLxfYYv61p3ZcYrHeacJ3gGoAwIZ8Chkc-mllvOrOUXJj';
 var terrainModels = Cesium.createDefaultTerrainProviderViewModels();
 var viewer = new Cesium.Viewer('cesiumContainer', {
     terrainProviderViewModels: terrainModels,
-    selectedTerrainProviderViewModel: terrainModels[1]
-  });
+    selectedTerrainProviderViewModel: terrainModels[1]  // Select STK High-res terrain
+});
 var scene = viewer.scene;
 var ellipsoid = viewer.scene.globe.ellipsoid;
-var pointOfInterest = Cesium.Cartographic.fromDegrees(
+var platformLocation = Cesium.Cartographic.fromDegrees(
     -112.729, 36.10883,6500, new Cesium.Cartographic());
 var enemyLocation = Cesium.Cartographic.fromDegrees(
     -112.6595, 36.10883,1326, new Cesium.Cartographic());
@@ -59,28 +63,121 @@ Cesium.sampleTerrain(viewer.terrainProvider, 9, [ pointOfInterest ])
     console.log('Height in meters is: ' + samples[0].height);
 });
 viewer.scene.globe.depthTestAgainstTerrain = true;
+var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(
+    Cesium.Cartesian3.fromDegrees(-112.6595, 36.10883,1226));
+var model = scene.primitives.add(Cesium.Model.fromGltf({
+    name :'Threat',
+    url : '/spaceJam2.0/Cesium_Ground.glb',
+    modelMatrix : modelMatrix,
+    scale : 1.0,
+    heading : 20,
+}));
 
-function createMq9() {
-    var height = 6400.00;
-    var position = Cesium.Cartesian3.fromDegrees(-112.729, 36.10883, height);
-    var heading = Cesium.Math.toRadians(270);
-    var pitch = 0;
-    var roll = 0;
-    var orientation = Cesium.Transforms.headingPitchRollQuaternion(position, heading, pitch, roll);
-    var entity = viewer.entities.add({
-        name : "MQ-9",
-        height : height,
-        position : position,
-        heading : heading,
-        pitch : pitch,
-        roll : roll,
-        orientation : orientation,
-        model : {
-            uri : '/spaceJam2.0/mq9.glb',
-            scale : 1
+var mq9Matrix = Cesium.Transforms.eastNorthUpToFixedFrame(
+    Cesium.Cartesian3.fromDegrees(-112.729, 36.10883,6400));
+    var platformHeight = 6400.00;
+    var platformHeading = Cesium.Math.toRadians(75);
+    var platformPitch = 0;
+    var platformRoll = 0;
+    var platformOrientation = Cesium.Transforms.headingPitchRollQuaternion(platformPosition, platformHeading, platformPitch, platformRoll);
+var model = scene.primitives.add(Cesium.Model.fromGltf({
+    height : platformHeight,
+    name :'MQ-9',
+    url : '/spaceJam2.0/hf.glb',
+    modelMatrix : mq9Matrix,
+    scale : 1.0,
+    heading : platformHeading,
+    position : platformLocation,
+    pitch : platformPitch,
+    roll : platformRoll,
+    orientation : platformOrientation
+}));
+var maxEffectiveRange = viewer.entities.add({
+  name: 'Maximum Effective Range',
+  position : Cesium.Cartesian3.fromDegrees(-112.6595, 36.10883, 3000),
+  ellipse : {
+    semiMinorAxis : 8000.0,
+    semiMajorAxis : 8000.0,
+      fill : false,
+      outline : true,
+      height:2000,
+      outlineColor : Cesium.Color.GREEN,
+      outlineWidth : 4.0,
+  }
+});
+var blastRadius = viewer.entities.add({
+    name : 'Blast Radius',
+    description: '',
+    position : Cesium.Cartesian3.fromDegrees(-112.6595, 36.10883,1227),
+    ellipsoid : {
+        radii : new Cesium.Cartesian3(20.0, 20.0, 20.0),
+        material : new Cesium.GridMaterialProperty({
+        color : Cesium.Color.YELLOW,
+        cellAlpha : 0.2,
+        lineCount : new Cesium.Cartesian2(8, 8),
+        lineThickness : new Cesium.Cartesian2(2.0, 2.0),
+         }
+    )}
+});
+var killRadius = viewer.entities.add({
+    name : 'Kill Radius',
+    description: '<iframe width="400" height="300" src="https://www.youtube.com/embed/-zVybabPTy4" frameborder="0" allowfullscreen></iframe>',
+    position : Cesium.Cartesian3.fromDegrees(-112.6595, 36.10883,1227),
+    ellipsoid : {
+        radii : new Cesium.Cartesian3(15.0, 15.0, 15.0),
+        material : Cesium.Color.RED.withAlpha(0.5),
+        outline : true,
+        outlineColor : Cesium.Color.BLACK,
     }
-  })
+    });
+ function red() {
+   alert("yep");
+    viewer.trackedEntity = killRadius;
 };
+//
+//Position the target object
+// var mq9Matrix = Cesium.Transforms.eastNorthUpToFixedFrame(
+//     Cesium.Cartesian3.fromDegrees(-112.729, 36.10883,6400));
+// //Create target object
+// var model = scene.primitives.add(Cesium.Model.fromGltf({
+//     //Name it for the info box
+//     name :'Threat',
+//     //Make the target a target apc
+//     url : '/spaceJam2.0/mq9.glb',
+//     //Position the target object (I could use modelMatrix for positioning of all objects ( except firing location ) )
+//     modelMatrix : mq9Matrix,
+//     //Size of the vehicle
+//     scale : 1.0,
+//     //direction of the apc
+//     heading : 20,
+// }));
+
+function fire() {
+  alert("works");
+    viewer.dataSources.add(Cesium.CzmlDataSource.load('/spaceJam2.0/agmLaunch.czml'));
+
+    viewer.scene.camera.setView({
+        destination:  Cesium.Cartesian3.fromDegrees( -112.7295, 36.10873, 8000),
+        orientation: {
+            heading: 6,
+            picth: -Cesium.Math.PI_OVER_TWO
+        }
+    });
+};
+// Cesium.addToolbarButton('Fire AGM-114',fire);
+// Add button to fire AH64
+// Cesium.addToolbarButton('Fire AGM-114', function() {
+//     viewer.dataSources.add(Cesium.CzmlDataSource.load('/sjc/agmLaunch.czml'));
+//
+//     viewer.scene.camera.setView({
+//         destination:  Cesium.Cartesian3.fromDegrees( -112.7295, 36.10883, 8000),
+//         orientation: {
+//             heading: 6,
+//             picth: -Cesium.Math.PI_OVER_TWO
+//         }
+//     });
+// });
 </script>
+
 </body>
 </html>
